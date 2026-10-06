@@ -11,4 +11,11 @@ public final class Idempotency {
     public record Key(String key, String operation, String requestHash) { }
 
     public record Stored(UUID resourceId, String requestHash) { }
+
+    /** Another request stored the same Idempotency-Key first; the use case answers as a retry. */
+    public static class KeyTaken extends RuntimeException {
+        public KeyTaken() {
+            super("The Idempotency-Key was stored by a concurrent request");
+        }
+    }
 }
