@@ -24,5 +24,6 @@
   <modules>
     <module>finance-inventory-core</module>
     <module>finance-inventory-adapters</module>
+    <module>finance-inventory-app</module>
   </modules>
 </project>
