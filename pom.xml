@@ -23,5 +23,6 @@
 
   <modules>
     <module>finance-inventory-core</module>
+    <module>finance-inventory-adapters</module>
   </modules>
 </project>
