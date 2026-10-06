@@ -28,6 +28,9 @@ public interface InventoryRepository {
     /** The movements of a product of the tenant, most recent first; {@code type} null does not filter. */
     Page<StockMovement> movements(UUID tenant, UUID productId, MovementType type, Page.Request page);
 
+    /** A movement of a product of the tenant; what a retried key answers with. */
+    Optional<StockMovement> findMovement(UUID tenant, UUID movementId);
+
     Optional<Idempotency.Stored> findKey(String key, String operation);
 
     /** The product and its key in ONE transaction (norm 5.3.8). */
