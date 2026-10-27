@@ -9,7 +9,7 @@ import java.util.UUID;
  * Who calls, taken ONLY from the validated token (authentication.md, "Multi-tenancy"): the
  * subject, the role and the tenant. {@code credential} is the token itself, opaque to the use
  * cases: the adapter passes it on to appointment-api, which validates it again and applies its
- * tenant itself. It is never logged. Every operation here is ADMIN_BARBERSHOP only.
+ * tenant itself. It is never logged. Every public operation here is ADMIN_BARBERSHOP only.
  */
 public record Caller(String subject, Role role, UUID barbershopId, String credential) {
 
@@ -37,6 +37,16 @@ public record Caller(String subject, Role role, UUID barbershopId, String creden
 
     public boolean is(Role r) {
         return role == r;
+    }
+
+    /**
+     * Internal operations accept only the service token of the one service they exist for
+     * (authentication.md, "Internal operations"): a user's token, or another service's, is refused.
+     */
+    public void requireService(String service) {
+        if (role != Role.SERVICE || !subject.equals(service)) {
+            throw new Forbidden("Only " + service + " can do this");
+        }
     }
 
     /** The user id of the token; a service token has a service name instead. */
