@@ -6,15 +6,20 @@ import co.edu.corhuila.barbersaas.financeinventory.adapter.in.http.Rs256Verifier
 import co.edu.corhuila.barbersaas.financeinventory.adapter.out.http.AppointmentApiClient;
 import co.edu.corhuila.barbersaas.financeinventory.adapter.out.persistence.InMemoryFinanceRepository;
 import co.edu.corhuila.barbersaas.financeinventory.adapter.out.persistence.InMemoryInventoryRepository;
+import co.edu.corhuila.barbersaas.financeinventory.adapter.out.persistence.InMemoryProcessedEvents;
 import co.edu.corhuila.barbersaas.financeinventory.adapter.out.persistence.JdbcFinanceRepository;
 import co.edu.corhuila.barbersaas.financeinventory.adapter.out.persistence.JdbcInventoryRepository;
+import co.edu.corhuila.barbersaas.financeinventory.adapter.out.persistence.JdbcProcessedEvents;
 import co.edu.corhuila.barbersaas.financeinventory.adapter.out.persistence.SystemClock;
 import co.edu.corhuila.barbersaas.financeinventory.adapter.out.persistence.UuidGenerator;
+import co.edu.corhuila.barbersaas.financeinventory.application.port.in.EventUseCases;
 import co.edu.corhuila.barbersaas.financeinventory.application.port.in.FinanceUseCases;
 import co.edu.corhuila.barbersaas.financeinventory.application.port.in.InventoryUseCases;
 import co.edu.corhuila.barbersaas.financeinventory.application.port.out.AppointmentLookup;
 import co.edu.corhuila.barbersaas.financeinventory.application.port.out.FinanceRepository;
 import co.edu.corhuila.barbersaas.financeinventory.application.port.out.InventoryRepository;
+import co.edu.corhuila.barbersaas.financeinventory.application.port.out.ProcessedEvents;
+import co.edu.corhuila.barbersaas.financeinventory.application.usecase.HandleEvents;
 import co.edu.corhuila.barbersaas.financeinventory.application.usecase.ManageFinance;
 import co.edu.corhuila.barbersaas.financeinventory.application.usecase.ManageInventory;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -74,6 +79,18 @@ public class FinanceInventoryConfiguration {
     @Bean
     FinanceRepository financeRepository(Database db) {
         return db.pool().isEmpty() ? new InMemoryFinanceRepository() : new JdbcFinanceRepository(db.jdbc(), db.tx());
+    }
+
+    /** In memory, the automatic income lands in the same records the screens read. */
+    @Bean
+    ProcessedEvents processedEvents(Database db, FinanceRepository records) {
+        return db.pool().isEmpty() ? new InMemoryProcessedEvents((InMemoryFinanceRepository) records)
+                : new JdbcProcessedEvents(db.jdbc(), db.tx());
+    }
+
+    @Bean
+    EventUseCases eventUseCases(ProcessedEvents processed) {
+        return new HandleEvents(processed, new SystemClock(), new UuidGenerator());
     }
 
     @Bean
