@@ -11,8 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
- * Validates the bearer token on every route under /api/: nothing in finance-inventory-service.yaml is
- * anonymous, and the service has no internal operations.
+ * Validates the bearer token on every route under /api/ (nothing in finance-inventory-service.yaml is
+ * anonymous) and under /internal/ (authentication.md, "Internal operations": never anonymous).
  */
 public class AuthFilter extends OncePerRequestFilter {
 
@@ -29,7 +29,7 @@ public class AuthFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
-        return !path.startsWith("/api/");
+        return !path.startsWith("/api/") && !path.startsWith("/internal/");
     }
 
     @Override
