@@ -65,4 +65,14 @@ public class InMemoryFinanceRepository implements FinanceRepository {
         rows.put(record.id(), record);
         keys.put(id, new Idempotency.Stored(record.id(), key.requestHash()));
     }
+
+    /** The automatic income of InMemoryProcessedEvents, which has no idempotency key. */
+    void add(FinanceRecord record) {
+        rows.put(record.id(), record);
+    }
+
+    boolean hasIncomeFor(UUID tenant, UUID appointmentId) {
+        return rows.values().stream().anyMatch(r -> r.barbershopId().equals(tenant) && r.type() == FinanceRecordType.INCOME
+                && appointmentId.equals(r.relatedAppointmentId()));
+    }
 }
