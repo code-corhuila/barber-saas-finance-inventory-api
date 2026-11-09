@@ -5,6 +5,14 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] - 2026-11-05
+
+User stories: code-corhuila/barber-saas-docs#145
+
+### Added
+
+- events: record a completed appointment as an income
+
 ## [2.0.0] - 2026-10-08
 
 User stories: code-corhuila/barber-saas-docs#10, code-corhuila/barber-saas-docs#11, code-corhuila/barber-saas-docs#13, code-corhuila/barber-saas-docs#59
@@ -64,4 +72,5 @@ User stories: code-corhuila/barber-saas-docs#10, code-corhuila/barber-saas-docs#
 - build: add the app module that composes the service
 - config: list the environment variables without any value
 
+[3.0.0]: https://github.com/code-corhuila/barber-saas-finance-inventory-api/releases/tag/v3.0.0
 [2.0.0]: https://github.com/code-corhuila/barber-saas-finance-inventory-api/releases/tag/v2.0.0
